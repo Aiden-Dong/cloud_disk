@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Client Connect</title>
+    <link rel="stylesheet" href="css/flow.css" media="screen" title="no title">
+  </head>
+  <body>
+    <div>
+      <h1 class="title_h">用户信息维护:</h1>
+    </div>
+    <p class="context_class">
+      &nbsp;&nbsp;&nbsp;&nbsp;此软件时服务器版本,由于作者能力有限, 并未有客户端.如果有有兴趣的,欢迎参与客户端制作,
+      在这里,作者将说明通信的协议
+    </p>
+    <p class="context_class">
+      &nbsp;&nbsp;&nbsp;&nbsp;这里只说明下通信的结构, 具体的通信协议请参照源码中的 <span class="class_key">socket_server.h</span>
+      和 <span class="class_key">file_msg.h</span>
+    </p>
+    <div id="img_div_id">
+      <span>
+        <img src="img/cts.png" alt="" class="two_img_class"/>
+        <img src="img/stc.png" alt="" class="two_img_class"/>
+      </span>
+    </div>
+    <div>
+      <p class="context_class">
+        &nbsp;&nbsp;&nbsp;&nbsp;服务器与客户端通信主要是通过<span class="class_key">socket_server.h</span>中的
+        CLI_TO_SERV 和 SERV_TO_CLI 结构传输数据,唯一需要注意的是, 在登录或注册时, fname 中存放的时用户名(标识符),main中存放
+        的是密码.其他事件对应的字段请正常填写(现在传输字节大小已改为uint32_t类型).
+      </p>
+    </div>
+    <div>
+      <div id="image_div">
+        <img src="img/trans.png" alt="" />
+      </div>
+      <p class="context_class">
+        &nbsp;&nbsp;&nbsp;&nbsp;当用户需要上传文件内容过程中需要使用<span class="class_key">file_msg.h</span>中的TRANS_CONTEXT结构
+        如右图所示, 结构体中分为三部分, 数据的真实值存放在 trans_data 数组中, trans_len 的值是数组中的真正数据长度, trans_flags 是标志传输是否完成,
+        在文件传输过程中, trans_flags 的值为 0, 而当文件传输完成后 trans_len 为0, 这时 trans_flags 的值应为1.
+      </p>
+      <p class="context_class">
+        &nbsp;&nbsp;&nbsp;&nbsp;普通的客户端请求时,发送用户请求然后客户端完成后返回响应.而如果时用户上传或下载任务, 客户端上传请求给服务器,服务器允许后在上传或下载数据,
+        而当任务完成后, 服务器会会送结果.
+      </p>
+    </div>
+  </body>
+</html>

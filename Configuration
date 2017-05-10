@@ -1,0 +1,22 @@
+#! /bin/sh
+GCC=`which gcc`
+MYSQL_H="/usr/include/mysql"
+
+echo "check gcc lib devel"
+
+if [ -z ${GCC} ]
+then
+    echo "gcc is not found"
+    exit
+fi
+
+echo "check mysql lib devel"
+if [ ! -d ${MYSQL_H} ]
+then
+  echo "mysql-x.x.xx-linux-glibc not found"
+  exit
+fi
+
+echo "Configuration sucess"
+
+cp .Makefile Makefile

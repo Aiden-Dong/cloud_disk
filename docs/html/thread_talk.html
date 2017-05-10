@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>communication</title>
+    <link rel="stylesheet" href="css/flow.css" media="screen" title="no title">
+  </head>
+  <body>
+    <div>
+      <h1 class="title_h">交互模型:</h1>
+      <div id="image_div">
+        <img src="img/comm.jpg" alt="" />
+      </div>
+      <p>
+        交互在此软件中具有非常重要的意义, 在此软件中,使用了多种交互方式, 其中包括tcp socket, unix socket, pipe 通信方式.针对不同的通信特点,
+        这里使用了不同的通信方式.
+      </p>
+      <p>
+        <span class="title_p">Tcp Socket:</span>
+      </p>
+      <p class="context_class">
+        &nbsp;&nbsp;&nbsp;&nbsp;在与客户端的交流通信中, 这里使用了 tcp 通信方式, 虽然使用 udp 的通信具有更少的资源消耗,
+        但是作者感觉使用 udp 不便于维护通信的完整性, 容易被中间登陆者介入.而且无法确定用户是否已经下线.其实作者也有考虑在文件上传和下载过程中使用
+        udp 协议来代替 tcp 协议.实现正在完善中.
+      </p>
+      <p class="context_class">
+        &nbsp;&nbsp;&nbsp;&nbsp;当用户在与服务器建立连接时, 与通常服务器模型相同, 将触发服务器监听套接字事件, 服务器完成与客户端连接后,
+        将客户的生存期设置为较小值后,将与用户通信的套接字放入监听池, 目的是让客户端在短时间内要完成连接后的请求(登录,注册),否则, 生存期过后,
+        用户将被清理线程注销(防止有人恶意链接服务器,占用资源).完成连接后, 之后的链接将直接触发监听池的客户通信套接字完成通信.
+      </p>
+      <p>
+        <span class="title_p">Unix Socket:</span>
+      </p>
+      <p class="context_class">
+        &nbsp;&nbsp;&nbsp;&nbsp;主线程与中转线程使用unix域套接字,主要是因为两线程间需要双向通信的特点:主线程到中转线程主要是发送客户端的请求,
+        中转线程到主线程主要是发送中转线程的线程状况.中转线程与主线程的通信套接字也放在监听池中(中转线程池中也有一个epoll 池来存放主线程和线程池的套接字,
+        所以unix域套接字两端都在不同的epoll池中).
+      </p>
+      <p>
+        <span class="title_p">管道通信:</span>
+      </p>
+      <p class="context_class">
+        &nbsp;&nbsp;&nbsp;&nbsp;中转线程与事件处理线程池的线程通信使用的是管道通信, 其实使用 unix 与套接字也可, 但是需要监听大量的套接字(每个事件处理线程一个套接字)
+        , 这里使用的单向通信的管道方式目的是为了减少监听量.
+      </p>
+      <p class="context_class">
+        &nbsp;&nbsp;&nbsp;&nbsp;设计的具体方式是:从中转线程到每个事件处理线程一个管道(中转->事件处理), 然后只设计一个从线程池到中转线程的管道.
+        中转线程向线程池中的事件处理线程发送消息需要使用对应的特定管道管道(中转->事件处理).线程池任何一个线程需要向中转线程发送自己的线程状态时,都公用那唯一的一个
+        线程池到中转线程的管道,当然这里为了避免消息发送冲突导致的消息混乱,需要对这唯一一个管道加锁操作,而且为了让中转线程知道是线程池中的哪个线程发来的消息, 这里发送消息的线程,
+        需要在消息中指明自己的身份.
+      </p>
+    </div>
+
+  </body>
+</html>

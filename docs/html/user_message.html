@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>User Message</title>
+    <link rel="stylesheet" href="css/flow.css" media="screen" title="no title">
+  </head>
+  <body>
+    <div >
+      <h1 class="title_h">用户信息维护:</h1>
+      <div id="image_div">
+        <img src="img/user_message.png" alt="" />
+        <img src="img/mutex.png" alt="" />
+      </div>
+      <p class="context_class">
+        &nbsp;&nbsp;&nbsp;&nbsp;用户在连接后,服务器将对用户进行用户信息初始化, 具体的初始化内容如右图所示,
+        服务器主要维护的用户信息有:用户连接交互的套接字, 身份, Ip地址, 生存期, 当前所在目的, 登录时间等.
+      </p>
+
+      <p class="context_class">
+        &nbsp;&nbsp;&nbsp;&nbsp;用户信息链的维护主要有两级锁.在整个链表级维护一个锁 e_lock, 在每一个节点上有个节点级锁st_mutex.
+        当对链表结构进行操作时需要对链表级加锁, 而只对表内的生存期做修改时需要对节点级加锁.
+      </p>
+      <p class="context_class">
+        &nbsp;&nbsp;&nbsp;&nbsp;操作链表结构的过程主要有用户清理线程,主线程的用户退出事件触发,和服务器退出事件触发过程,
+        用户清理线程隔一段时间后将对用户节点信息做一次遍历,对每一节点的生存期做检测, 当用户节点的生存期大于 0 时, 将生存期减一,
+        当用户生存期为0时要对用户做下线处理,将用户监听套接字从监听池中移除, 然后关闭与客户端的链接.然而不能立即释放客户端的信息节点.
+      </p>
+      <p class="context_class">
+        &nbsp;&nbsp;&nbsp;&nbsp;情况是这样的, 如果检测到用户的生存期为 0 时立即释放用户的信息节点, 然而在这之前清理线程还未将监听套接字移除并关闭时,
+        用户时间到达, 主进程还未来得及重置节点生存期时,这时候节点被清理线程释放, 主线程这时获取用户信息时将会进入无效内存区,产生堆栈溢出.为了避免这种情况,
+        清理线程不会立即释放当前的无效节点, 而是设置一个标志, 当主线程遍历完一次后将重新设置该标志,清理线程下次遍历时如果发现该标志被设置,那么将删除该节点.
+      </p>
+      <p class="context_class">
+        &nbsp;&nbsp;&nbsp;&nbsp;为什么这样就可以呢 ? 是这样的, 当主线程重新设置了该标志后, 说明主线程的一次触发将处理完毕, 正在进入下次触发, 然而此后,无效的用户
+        已经从监听池中移除, 所以不会再被触发,所以清理线程此时便可以清理完该标志.
+      </p>
+
+    </div>
+  </body>
+</html>

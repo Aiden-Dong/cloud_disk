@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Extend Message</title>
+    <link rel="stylesheet" href="css/flow.css" media="screen" title="no title">
+  </head>
+  <body>
+    <div>
+      <h1 class="title_h">可扩展分析:</h1>
+    </div>
+    <p class="extend_context">
+      &nbsp;&nbsp;&nbsp;&nbsp;1.清理线程会导致用户事件处理时延较高:因为每次用户清理线程在遍历时需要对链表加锁, 而且要对用户信息做遍历.
+      这样当用户节点较多时, 遍历的时间也会增多. 这时如果有用户退出,或登录时,将会产生较长的等待时间.可设计每访问一定数量的节点后,主动放开链表级锁等待较短时间
+      后在继续访问, 但是这里作者考虑释放前需要对节点加锁(防止节点被释放),这样在线程交互时容易产生死锁, 针对这一问题,作者还没有较好的解决方案, 所以暂时这么设计,
+      等有较好的处理方式后在进行改进.
+    </p>
+    <p class="extend_context">
+      &nbsp;&nbsp;&nbsp;&nbsp;2.线程数量控制可能存在问题, 因为作者正在处于学习阶段,并没有较多的实践机会, 没有较好的把握线程数量对服务器性能的影响问题,
+      正对这一问题,如果有读者原与作者分享经验,将感激不尽.
+    </p>
+    <p class="extend_context">
+      &nbsp;&nbsp;&nbsp;&nbsp;3.服务器与客户端通信过程中没有加密协议等安全策略, 此方向作者尚未涉及, 能力有限, 但日后应该会增加此项功能.
+    </p>
+  </body>
+</html>

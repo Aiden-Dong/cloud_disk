@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>SNFM</title>
+    <link rel="stylesheet" href="css/index.css" media="screen" title="no title">
+  </head>
+  <body>
+    <div id="head_div">
+      <div id="title_div">
+        <span>Saligia Network File Manager</span>
+      </div>
+      <div id="menu_div">
+        <table>
+          <tr>
+            <td><a href="html/thread_model.html"class="a_link">线程模型</a></td>
+            <td><a href="html/thread_talk.html"class="a_link">交互模型</a></td>
+            <td><a href="html/user_message.html"class="a_link">用户信息维护</a></td>
+            <td><a href="html/client_conn.html"class="a_link">客户端开发说明</a></td>
+            <td><a href="html/extend_mess.html"class="a_link">可扩展分析</a></td>
+          </tr>
+        </table>
+      </div>
+      <hr id="line_hr">
+    </div>
+    <div id="body_div">
+      <div id="image_body_div">
+        <img src="img/index.jpg" alt="" />
+      </div>
+      <span>
+        <p>
+          &nbsp;&nbsp;&nbsp;&nbsp;本程序主要用于交流学习,他是是基于 TCP/IP 协议开发的文件管理系统，使用多线程并发运行, 增强事物处理能力.
+          ,主要的用途是文件的网络管理, 支持用户对自己的网络文件系统进行上传与下载.帮助用户更好的管理自己的信息.
+        </p>
+        <p>
+          &nbsp;&nbsp;&nbsp;&nbsp;服务器的服务流程请参照右图,主要的线程有主线程, 中转线程, 用户清理线程,用户事件处理线程池.
+          用户的信息使用用户信息链来维护,这也是用户清理线程的主要操作对象.所有的通信描述符使用 epoll 描述符来维护.
+        </p>
+        <p>
+          &nbsp;&nbsp;&nbsp;&nbsp;用户通过用户账号来管理登录自己的网络文件系统,初始情况下用户目录下为空, 用户可以创建和删除文件夹,但不能创建文件,
+          文件夹删除时文件夹下的内容必须为空,为了防止用户恶意操作损坏服务器系统, 文件名称不能有 / . 等字符.
+        </p>
+        <p>
+          &nbsp;&nbsp;&nbsp;&nbsp;文件只能通过上传方式创建, 而且暂不支持连同文件夹一起上传, 只能支持单文件的上传下载工作.文件上传或下载过程中如果因为某些原因导致
+          链接失败, 上传下载将彻底失败, 如果是上传任务, 失败的文件将被删除,暂不支持断点下载.
+        </p>
+        <p>
+          &nbsp;&nbsp;&nbsp;&nbsp;用户的所有操作都将产生日志记录到mysql的日志表中,系统的所有事件会记录到日志表中
+        </p>
+        <p>
+          &nbsp;&nbsp;&nbsp;&nbsp;用户在操作时有时系统的请求服务太多会导致某写用户请求失败, 暂不支持用户操作在服务忙时自动等待完成的功能, 原因请参照源码.
+          此功能在后续版本中修复,如果您有更好的意见或建议,欢迎联系作者讨论.
+        </p>
+      </span>
+    </div>
+  </body>
+</html>
