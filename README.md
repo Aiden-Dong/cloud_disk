@@ -1,4 +1,4 @@
-## 网络文件管理器(Saligia Network File Manager)
+## 网络文件管理器(Clion Disk)
 
 作者： `董涛`
 
